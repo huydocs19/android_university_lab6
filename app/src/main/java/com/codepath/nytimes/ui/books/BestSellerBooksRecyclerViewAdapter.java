@@ -3,6 +3,7 @@ package com.codepath.nytimes.ui.books;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,6 +49,12 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
                 .centerInside()
                 .into(holder.mBookImage);
 
+        holder.mBuyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onItemClick(holder.mItem);
+            }
+        });
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +79,7 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
         public final TextView mBookAuthor;
         private final TextView mBookRanking;
         private final TextView mBookDescription;
+        private final Button mBuyButton;
         public BestSellerBook mItem;
 
         public BookViewHolder(View view) {
@@ -82,6 +90,7 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
             mBookAuthor = (TextView) view.findViewById(R.id.book_author);
             mBookRanking = (TextView) view.findViewById(R.id.ranking);
             mBookDescription = (TextView) view.findViewById(R.id.book_description);
+            mBuyButton = (Button) view.findViewById(R.id.buy_button);
         }
 
         @Override

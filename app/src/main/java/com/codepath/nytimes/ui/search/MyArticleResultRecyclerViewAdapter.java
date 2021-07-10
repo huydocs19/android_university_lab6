@@ -77,7 +77,7 @@ public class MyArticleResultRecyclerViewAdapter extends RecyclerView.Adapter<Rec
             }
 
             if (article.multimedia.size() > 0) {
-                Glide.with(articleViewHolder.mView).load("http://static01.nytimes.com/" + article.multimedia.get(0).url)
+                Glide.with(articleViewHolder.mView).load("https://static01.nytimes.com/" + article.multimedia.get(0).url)
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.imagenotfound)
                         .listener(new RequestListener<Drawable>() {
