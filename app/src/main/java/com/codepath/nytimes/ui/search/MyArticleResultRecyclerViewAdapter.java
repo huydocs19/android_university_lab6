@@ -1,13 +1,22 @@
 package com.codepath.nytimes.ui.search;
 
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.codepath.nytimes.R;
 import com.codepath.nytimes.models.Article;
 
@@ -55,7 +64,7 @@ public class MyArticleResultRecyclerViewAdapter extends RecyclerView.Adapter<Rec
         }
         if (holder instanceof ArticleViewHolder) {
             Article article = articleList.get(position);
-            ArticleViewHolder articleViewHolder = (ArticleViewHolder) holder;
+            final ArticleViewHolder articleViewHolder = (ArticleViewHolder) holder;
             articleViewHolder.headlineView.setText(article.headline.main);
             articleViewHolder.snippetView.setText(article.snippet);
             try {
@@ -65,6 +74,31 @@ public class MyArticleResultRecyclerViewAdapter extends RecyclerView.Adapter<Rec
                 articleViewHolder.dateView.setText(newDateFormat.format(date));
             } catch (ParseException e) {
                 e.printStackTrace();
+            }
+
+            if (article.multimedia.size() > 0) {
+                Glide.with(articleViewHolder.mView).load("http://static01.nytimes.com/" + article.multimedia.get(0).url)
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.imagenotfound)
+                        .listener(new RequestListener<Drawable>() {
+                                      ArticleViewHolder aViewHolder = articleViewHolder;
+                                      @Override
+                                      public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                          // log exception
+                                          Log.e("ArticleResultsRVAdapter", "Error loading image", e);
+                                          aViewHolder.articleImageView.setVisibility(View.GONE);
+                                          return false; // important to return false so the error placeholder can be placed
+                                      }
+
+                                      @Override
+                                      public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                          return false;
+                                      }
+                                  }
+                        )
+                        .into(articleViewHolder.articleImageView);
+            } else {
+                articleViewHolder.articleImageView.setVisibility(View.GONE);
             }
         }
     }
@@ -105,12 +139,15 @@ public class MyArticleResultRecyclerViewAdapter extends RecyclerView.Adapter<Rec
         final TextView headlineView;
         final TextView snippetView;
         final TextView dateView;
-
+        public ImageView articleImageView;
+        public final View mView;
         ArticleViewHolder(View view) {
             super(view);
+            mView = view;
             dateView = view.findViewById(R.id.article_pub_date);
             headlineView = view.findViewById(R.id.article_headline);
             snippetView = view.findViewById(R.id.article_snippet);
+            articleImageView  = view.findViewById(R.id.article_photo);
         }
     }
 

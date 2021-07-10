@@ -1,14 +1,28 @@
 package com.codepath.nytimes.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.codepath.nytimes.R;
+import com.codepath.nytimes.models.BestSellerBook;
+import com.codepath.nytimes.models.PopularArticle;
+import com.codepath.nytimes.networking.CallbackResponse;
+import com.codepath.nytimes.networking.NYTimesApiClient;
+import com.codepath.nytimes.ui.books.BestSellerBooksFragment;
+import com.codepath.nytimes.ui.books.BestSellerBooksRecyclerViewAdapter;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,20 +47,58 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) view.findViewById(R.id.progress);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvPopularArticles);
+
+        Context context = view.getContext();
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        updateAdapter(progressBar, recyclerView);
+        getActivity().setTitle(getString(R.string.action_bar_home));
+        return view;
+
+        //getActivity().setTitle(getString(R.string.action_bar_home));
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        //return inflater.inflate(R.layout.fragment_home, container, false);
+
     }
-    // This event is triggered soon after onCreateView().
-    // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
+    private void updateAdapter(final ContentLoadingProgressBar progressBar, final RecyclerView recyclerView) {
+        progressBar.show();
+        NYTimesApiClient nyTimesApiClient = new NYTimesApiClient();
+        nyTimesApiClient.getPopularArticlesByQuery(new CallbackResponse<List<PopularArticle>>() {
+            @Override
+            public void onSuccess(List<PopularArticle> models) {
+                progressBar.hide();
+                recyclerView.setAdapter(new PopularArticleRecyclerViewAdapter(models));
+                Log.d("BestSellerBooksFragment", "response successful");
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                progressBar.hide();
+                Log.e("BestSellerBooksFragment", error.getMessage());
+            }
+        });
+
+    }
+
+
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        // Setup any handles to view objects here
-        // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+
 }

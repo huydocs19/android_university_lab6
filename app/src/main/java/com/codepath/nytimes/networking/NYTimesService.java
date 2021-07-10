@@ -2,6 +2,7 @@ package com.codepath.nytimes.networking;
 
 import com.codepath.nytimes.models.NYTimesAPIResponse;
 import com.codepath.nytimes.models.NYTimesArticlesAPIResponse;
+import com.codepath.nytimes.models.NYTimesPopularArticlesAPIResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,5 +21,10 @@ public interface NYTimesService {
             @Query("sort") String sortBy,
             @Query("fl") String filter,
             @Query("begin_date") String beginDate,
+            @Query("api-key") String apikey);
+    @GET("svc/mostpopular/v2/{category}/{period}.json")
+    Call<NYTimesPopularArticlesAPIResponse> getPopularArticlesByQuery(
+            @Path("category") String category,
+            @Path("period") String period,
             @Query("api-key") String apikey);
 }
