@@ -1,6 +1,8 @@
 package com.codepath.nytimes.ui.home;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.core.widget.ContentLoadingProgressBar;
@@ -57,6 +59,9 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) view.findViewById(R.id.progress);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvPopularArticles);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        view.findViewById(R.id.flPopularArticle).setBackgroundColor(Color.parseColor(sharedPreferences.getString("BorderColor", "#121212")));
 
         Context context = view.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));

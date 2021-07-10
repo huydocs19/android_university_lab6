@@ -1,6 +1,8 @@
 package com.codepath.nytimes.ui.search;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +42,7 @@ public class ArticleResultFragment extends Fragment {
     private String savedQuery;
     private EndlessRecyclerViewScrollListener scrollListener;
     MyArticleResultRecyclerViewAdapter adapter = new MyArticleResultRecyclerViewAdapter();
+
 
 
     /**
@@ -85,8 +88,15 @@ public class ArticleResultFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_article_result_list, container, false);
 
 
+
+
         recyclerView = view.findViewById(R.id.list);
         progressSpinner = view.findViewById(R.id.progress);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        view.findViewById(R.id.flArticleResultList).setBackgroundColor(Color.parseColor(sharedPreferences.getString("BackgroundColor", "#FFFFFF")));
+        recyclerView.setBackgroundColor(Color.parseColor(sharedPreferences.getString("BorderColor", "#121212")));
+
         // Set the adapter
         Context context = view.getContext();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);

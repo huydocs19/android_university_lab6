@@ -2,13 +2,16 @@ package com.codepath.nytimes.ui.books;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.core.widget.ContentLoadingProgressBar;
@@ -47,6 +50,11 @@ public class BestSellerBooksFragment extends Fragment implements OnListFragmentI
         View view = inflater.inflate(R.layout.fragment_best_seller_books_list, container, false);
         ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) view.findViewById(R.id.progress);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        view.findViewById(R.id.flBookList).setBackgroundColor(Color.parseColor(sharedPreferences.getString("BorderColor", "#FFFFFF")));
+
 
         Context context = view.getContext();
         if (context.getResources().getConfiguration(). orientation == Configuration.ORIENTATION_LANDSCAPE) {

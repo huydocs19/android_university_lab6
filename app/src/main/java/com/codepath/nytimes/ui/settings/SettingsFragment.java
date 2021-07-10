@@ -2,6 +2,7 @@ package com.codepath.nytimes.ui.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,7 @@ import com.codepath.nytimes.R;
 public class SettingsFragment extends Fragment {
     Switch darkModeSwitch;
     FrameLayout flContainer;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -51,13 +53,33 @@ public class SettingsFragment extends Fragment {
 
         darkModeSwitch = (Switch) view.findViewById(R.id.sDarkMode);
         flContainer = (FrameLayout) view.findViewById(R.id.flContainer);
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        darkModeSwitch.setChecked(sharedPreferences.getBoolean("isChecked", false));
+        flContainer.setBackgroundColor(Color.parseColor(sharedPreferences.getString("BackgroundColor", "#FFFFFF")));
+        darkModeSwitch.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
         darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isChecked", b);
                 if (b) {
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
+                    editor.putString("BackgroundColor", "#121212");
+                    editor.putString("TextColor", "#FFFFFF");
+                    editor.putString("BorderColor", "#1C2833");
+
+                    editor.apply();
+                    flContainer.setBackgroundColor(Color.parseColor("#121212"));
+                    darkModeSwitch.setTextColor(Color.parseColor("#FFFFFF"));
+
+                } else {
+                    editor.putString("BackgroundColor", "#FFFFFF");
+                    editor.putString("TextColor", "#121212");
+                    editor.putString("BorderColor", "#dddddd");
+                    editor.apply();
+                    flContainer.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    darkModeSwitch.setTextColor(Color.parseColor("#121212"));
                 }
             }
         });

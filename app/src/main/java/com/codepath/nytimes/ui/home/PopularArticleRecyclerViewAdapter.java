@@ -1,6 +1,8 @@
 package com.codepath.nytimes.ui.home;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +37,7 @@ import java.util.Locale;
 
 public class PopularArticleRecyclerViewAdapter extends RecyclerView.Adapter<PopularArticleRecyclerViewAdapter.PopularArticleViewHolder>{
     public List<PopularArticle> articleList;
-
+    SharedPreferences sharedPreferences;
 
 
 
@@ -55,6 +57,8 @@ public class PopularArticleRecyclerViewAdapter extends RecyclerView.Adapter<Popu
         // Inflate the custom layout
         View articleView = inflater.inflate(R.layout.fragment_home_popular_article, parent, false);
         // Return a new holder instance
+        sharedPreferences = parent.getContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        articleView.setBackgroundColor(Color.parseColor(sharedPreferences.getString("BackgroundColor", "#FFFFFF")));
         return new PopularArticleViewHolder(articleView);
 
 
@@ -71,8 +75,9 @@ public class PopularArticleRecyclerViewAdapter extends RecyclerView.Adapter<Popu
 
         // Set item views based on views and data model
         holder.headlineView.setText(article.title);
+        holder.headlineView.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
         holder.snippetView.setText(article.articleAbstract);
-
+        holder.snippetView.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
 
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         Date date = new Date();
@@ -85,6 +90,7 @@ public class PopularArticleRecyclerViewAdapter extends RecyclerView.Adapter<Popu
         SimpleDateFormat newFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
         String publishedDate = newFormat.format(date);
         holder.dateView.setText(publishedDate);
+        holder.dateView.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
 
         if (article.multimedia.size() > 0) {
             List<MetaData> media = article.multimedia.get(0).mediaMetaData;

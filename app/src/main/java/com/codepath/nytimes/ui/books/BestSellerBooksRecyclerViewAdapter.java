@@ -1,5 +1,8 @@
 package com.codepath.nytimes.ui.books;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
 
     private final List<BestSellerBook> books;
     private final OnListFragmentInteractionListener mListener;
+    SharedPreferences sharedPreferences;
 
     public BestSellerBooksRecyclerViewAdapter(List<BestSellerBook> items, OnListFragmentInteractionListener listener) {
         books = items;
@@ -33,6 +37,8 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
     public BookViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_best_seller_book, parent, false);
+        sharedPreferences = parent.getContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        view.setBackgroundColor(Color.parseColor(sharedPreferences.getString("BackgroundColor", "#FFFFFF")));
         return new BookViewHolder(view);
     }
 
@@ -41,9 +47,13 @@ public class BestSellerBooksRecyclerViewAdapter extends RecyclerView.Adapter<Bes
         BestSellerBook bestSellerBook = books.get(position);
         holder.mItem = bestSellerBook;
         holder.mBookTitle.setText(bestSellerBook.title);
+        holder.mBookTitle.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
         holder.mBookAuthor.setText(bestSellerBook.author);
+        holder.mBookAuthor.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
         holder.mBookRanking.setText(String.format("%d", bestSellerBook.rank));
+        holder.mBookRanking.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
         holder.mBookDescription.setText(bestSellerBook.description);
+        holder.mBookDescription.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "121212")));
         Glide.with(holder.mView)
                 .load(bestSellerBook.bookImageUrl)
                 .centerInside()

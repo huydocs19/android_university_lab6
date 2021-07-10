@@ -1,5 +1,8 @@
 package com.codepath.nytimes.ui.search;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,21 +39,26 @@ public class MyArticleResultRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     public static final int VIEW_TYPE_LOADING = 0;
     public static final int VIEW_TYPE_ARTICLE = 1;
     public static final int VIEW_TYPE_FIRST_PAGE_ARTICLE = 2;
-
+    SharedPreferences sharedPreferences;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        sharedPreferences = parent.getContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+
         if (viewType == VIEW_TYPE_ARTICLE) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.fragment_article_result, parent, false);
+            view.setBackgroundColor(Color.parseColor(sharedPreferences.getString("BackgroundColor", "#FFFFFF")));
             return new ArticleViewHolder(view);
         } else if (viewType == VIEW_TYPE_FIRST_PAGE_ARTICLE) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.fragment_article_result_first_page, parent, false);
+            view.setBackgroundColor(Color.parseColor(sharedPreferences.getString("BackgroundColor", "#FFFFFF")));
             return new FirstPageArticleViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.article_progress, parent, false);
+            view.setBackgroundColor(Color.parseColor(sharedPreferences.getString("BackgroundColor", "#FFFFFF")));
             return new LoadingViewHolder(view);
         }
     }
@@ -61,17 +69,21 @@ public class MyArticleResultRecyclerViewAdapter extends RecyclerView.Adapter<Rec
             // do something
             FirstPageArticleViewHolder articleViewHolder = (FirstPageArticleViewHolder) holder;
             articleViewHolder.firstPageHeader.setText(holder.itemView.getContext().getString(R.string.first_page, articleList.get(position).sectionName));
+            articleViewHolder.firstPageHeader.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
         }
         if (holder instanceof ArticleViewHolder) {
             Article article = articleList.get(position);
             final ArticleViewHolder articleViewHolder = (ArticleViewHolder) holder;
             articleViewHolder.headlineView.setText(article.headline.main);
+            articleViewHolder.headlineView.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
             articleViewHolder.snippetView.setText(article.snippet);
+            articleViewHolder.snippetView.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
             try {
                 SimpleDateFormat utcDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+SSS", Locale.getDefault());
                 Date date = utcDateFormat.parse(article.publishDate);
                 SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                 articleViewHolder.dateView.setText(newDateFormat.format(date));
+                articleViewHolder.dateView.setTextColor(Color.parseColor(sharedPreferences.getString("TextColor", "#121212")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
